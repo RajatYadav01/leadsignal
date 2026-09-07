@@ -20,14 +20,14 @@ LeadSignal is a web application that ingests lead datasets (CSV), cleans and val
 
 ## Tech Stack
 
-| Layer | Technology |
-| --- | --- |
-| **Web app** | React.js, Tailwind CSS, TypeScript |
-| **API app** | Python, Django, Django REST Framework, PostgreSQL, pytest |
-| **Database** | PostgreSQL |
-| **DevOps** | Docker, Docker Compose, GitHub Actions (CI/CD), Turborepo, pnpm |
-| **AI** | OpenRouter API |
-| **Testing** | Playwright (E2E), pytest (backend), Vitest (frontend) |
+| Layer          | Technology                                                                                                   |
+| -------------- | ------------------------------------------------------------------------------------------------------------ |
+| **Web app**    | React.js, Tailwind CSS, TypeScript                                                                           |
+| **API app**    | Python, Django, Django REST Framework, PostgreSQL, pytest                                                    |
+| **Database**   | PostgreSQL                                                                                                   |
+| **DevOps**     | Docker, Docker Compose, GitHub Actions (CI/CD), Turborepo, pnpm                                              |
+| **AI**         | OpenRouter API                                                                                               |
+| **Testing**    | Vitest (frontend), pytest (backend), Playwright (E2E)                                                        |
 | **Deployment** | [Vercel](https://vercel.com) (Web), [Vercel](https://vercel.com) (API) + [Neon](https://neon.com) (database) |
 
 ## Project Structure
@@ -55,11 +55,11 @@ leadsignal/
 │   └── api/                           # Django backend
 │       ├── config/                    # Django project settings, urls
 │       ├── apps/                      # Django apps
-│       │   ├── projects/              
-│       │   ├── leads/                 
-│       │   ├── data_quality/          
-│       │   ├── scoring/               
-│       │   └── intelligence/          
+│       │   ├── projects/
+│       │   ├── leads/
+│       │   ├── data_quality/
+│       │   ├── scoring/
+│       │   └── intelligence/
 │       ├── pyproject.toml             # Python dependencies (uv)
 │       ├── requirements.txt
 │       ├── package.json               # For Turborepo
@@ -126,11 +126,11 @@ To modify and use this project locally on your system, follow these steps:
    pnpm install
    ```
 
-4. Rename the `.env.example` file to `.env` in both `./apps/api/` and `./apps/web/` directories to use the environment variables in the apps.
+4. Rename the `.env.example` file to `.env` in both `./apps/api/v1` and `./apps/web/` directories to use the environment variables in the apps.
 
 5. Create a `user` with `password` and a `database` using the created `user` as owner in the PostgreSQL database since those are required to connect to the database. For this, you can either use the default values from the `env.example` file or use different values. Also, values of other variables can also be either used from the `env.example` file or different values based on your preference.
 
-6. Install all the dependencies and apply the default migrations to setup the `Django REST Framework` app in `./apps/api` directory using `uv` package manager.
+6. Install all the dependencies and apply the default migrations to setup the `Django REST Framework` app in `./apps/api/v1` directory using `uv` package manager.
 
    ```shell
    pnpm --filter "./apps/api/v1" setup
@@ -151,7 +151,7 @@ To modify and use this project locally on your system, follow these steps:
 9. Run the `Django REST Framework` app.
 
    ```shell
-   pnpm dev:api
+   pnpm dev:api:v1
    ```
 
 10. Open a different instance of the CLI that you are using or another instance of the code editor to run the `React.js` app.
@@ -167,13 +167,13 @@ To setup the project using Docker:
 1. Clone the project's repository.
 
    ```shell
-   git clone https://github.com/rajatyadav01/pathistics.git
+   git clone https://github.com/rajatyadav01/leadsignal.git
    ```
 
 2. Go to the project folder using the CLI.
 
    ```shell
-   cd pathistics
+   cd leadsignal
    ```
 
 3. Run the project using docker-compose.
