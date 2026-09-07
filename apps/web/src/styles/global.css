@@ -18,15 +18,15 @@
 
 /* Dark mode variables */
 .dark {
-	--primary: #111827;
-	--secondary: #1f2937;
-	--muted: #374151;
+	--primary: #02b4b8;
+	--secondary: #f3f4f6;
+	--muted: #e5e7eb;
 	--success: #16a34a;
 	--warning: #f59e0b;
 	--danger: #dc2626;
-	--text-primary: #f9fafb;
-	--text-secondary: #9ca3af;
-	--border-color: #374151;
+	--text-primary: #111827;
+	--text-secondary: #4b5563;
+	--border-color: #d1d5db;
 	--shadow-color: rgba(0, 0, 0, 0.3);
 }
 

@@ -110,14 +110,14 @@ export function UploadCSVPage() {
 							onChange={(event) => handleFileChange(event.target.files)}
 						/>
 
-						<div className="text-primary mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/40 dark:text-blue-400">
+						<div className="text-primary dark:text-primary mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/40">
 							<Upload size={26} />
 						</div>
 
 						<h2 className="mt-5 text-base font-semibold text-gray-900 dark:text-white">Drop your CSV file here</h2>
 
 						<p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-							or <span className="text-primary font-medium dark:text-blue-400">browse from your computer</span>
+							or <span className="text-primary dark:text-primary font-medium">browse from your computer</span>
 						</p>
 
 						<p className="mt-3 text-xs text-gray-400 dark:text-gray-500">CSV files only · Maximum size 10 MB</p>

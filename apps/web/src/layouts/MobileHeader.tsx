@@ -15,7 +15,7 @@ export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
 				aria-label="Open menu">
 				<Menu size={24} />
 			</button>
-			<Link to="/" className="text-primary flex items-center gap-2 text-xl font-bold dark:text-blue-400">
+			<Link to="/" className="text-primary dark:text-primary flex items-center gap-2 text-xl font-bold">
 				<Logo />
 				LeadSignal
 			</Link>
