@@ -1,0 +1,16 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Django local settings or sqlite DB if using it locally
+db.sqlite3
+.env
+.vercel
+.env*

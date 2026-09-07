@@ -1,0 +1,28 @@
+[project]
+name = "leadsignal_api_v1"
+version = "0.1.0"
+description = "Turn raw/enriched lead data into clean, explainable, prioritized sales opportunities"
+requires-python = ">=3.14.6"
+dependencies = [
+    "django>=6.1.1",
+    "django-cors-headers>=4.9.0",
+    "django-environ>=0.14.0",
+    "django-filter>=26.1",
+    "djangorestframework>=3.18.0",
+    "drf-spectacular>=0.30.0",
+    "psycopg2-binary>=2.9.12",
+    "pytest>=9.1.1",
+    "pytest-django>=4.14.0",
+    "requests>=2.34.2",
+    "whitenoise>=6.12.0",
+]
+
+[dependency-groups]
+dev = [
+    "pylint>=4.0.8",
+    "ruff>=0.16.5",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["config*", "apps*"]

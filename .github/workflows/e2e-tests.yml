@@ -1,0 +1,102 @@
+name: E2E Tests
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        required: false
+        type: string
+        default: "24"
+      working-directory:
+        required: false
+        type: string
+        default: "packages/e2e-tests"
+      start-worker:
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  e2e-tests:
+    name: Playwright E2E
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Set up uv (Python Package Manager)
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+        with:
+          enable-cache: true
+          cache-dependency-glob: "apps/api/pyproject.toml"
+
+      - name: Install Backend dependencies
+        run: |
+          uv venv apps/api/.venv
+          cd apps/api
+          uv sync --group dev
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: pnpm
+
+      # Install all dependencies for the monorepo once at the root for caching
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm --filter "@pathistics/e2e-tests" exec playwright install --with-deps
+
+      - name: Create Backend Test Environment Configuration File
+        run: |
+          cat << EOF > apps/api/.env
+          DEBUG=True
+          SECRET_KEY=pathistics-secret-key
+          ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+          CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,http://0.0.0.0:5173
+          DATABASE_URL=postgres://postgres:password@localhost:5432/test_db
+          OSRM_API_URL=https://router.project-osrm.org
+          EOF
+
+      - name: Prepare local database for the tests
+        env:
+          DATABASE_URL: "postgres://postgres:password@localhost:5432/test_db"
+        run: pnpm --filter "@pathistics/api" run db:migrate
+
+      - name: Run Playwright tests
+        run: pnpm test:e2e
+
+      # Upload Playwright report
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: ${{ inputs.working-directory }}/playwright-report/
+          retention-days: 30

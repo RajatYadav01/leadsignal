@@ -1,0 +1,15 @@
+node_modules
+.pnpm
+dist
+public
+**/**/node_modules
+**/**/public
+coverage
+
+*.lock
+*.log
+
+.DS_Store
+.eslintignore
+.gitignore
+.prettierignore

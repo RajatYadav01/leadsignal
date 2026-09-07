@@ -1,0 +1,64 @@
+name: "Integration Tests"
+
+on:
+  workflow_call:
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Set up uv (Python Package Manager)
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+        with:
+          enable-cache: true
+          cache-dependency-glob: "apps/api/pyproject.toml"
+
+      - name: Install Backend dependencies
+        run: |
+          uv venv apps/api/.venv
+          cd apps/api
+          uv sync --group dev
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: "pnpm" # Caches node_modules automatically
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Global Monorepo Integration Tests
+        env:
+          # Global environment variables for test steps
+          SECRET_KEY: "ci-test-secret-key"
+          DATABASE_URL: "postgres://postgres:password@localhost:5432/test_db"
+          DEBUG: "True"
+        run: pnpm test:integration

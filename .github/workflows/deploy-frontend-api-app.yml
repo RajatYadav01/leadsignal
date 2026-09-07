@@ -1,0 +1,56 @@
+name: Deploy Frontend
+
+on:
+  workflow_run:
+    workflows: ["All Checks"]
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  deploy-frontend-web-app:
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency:
+      group: frontend-web-deploy
+      cancel-in-progress: false
+
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_WEB_APP_PROJECT_ID }}
+
+    if: >-
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main') ||
+      (github.event_name == 'workflow_dispatch')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Vercel CLI
+        run: pnpm add -g vercel
+
+      # Pulls down existing Vercel project configuration
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      # Let Vercel handle the build inside the correct workspace directory
+      - name: Build project artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      # Deploys the compiled pre-built outputs directly from the workspace
+      - name: Deploy Artifacts to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}

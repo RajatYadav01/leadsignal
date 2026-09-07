@@ -1,0 +1,24 @@
+{
+	"name": "@leadsignal/api-v1",
+	"version": "0.1.0",
+	"private": true,
+	"license": "BSD-3-Clause",
+	"type": "module",
+	"scripts": {
+		"setup": "uv sync && uv run python manage.py migrate",
+        "format": ".venv/bin/ruff format .",
+        "format:check": ".venv/bin/ruff format --check .",
+		"lint": ".venv/bin/ruff check .",
+		"lint:fix": ".venv/bin/ruff check . --fix",
+		"lint:report": ".venv/bin/ruff check . --format json --output-file lint-report.json || true",
+		"test": "cross-env PYTHONPATH=. uv run manage.py test apps.trips",
+		"test:unit": "cross-env PYTHONPATH=. TEST_MODE=unit uv run python manage.py test apps.trips.tests.test_unit",
+		"test:integration": "cross-env PYTHONPATH=. TEST_MODE=integration uv run python manage.py test apps.trips.tests.test_integration",
+		"dev": "uv run manage.py runserver 0.0.0.0:8000",
+		"db:makemigrations": "uv run manage.py makemigrations",
+		"db:migrate": "uv run manage.py migrate"
+	},
+	"devDependencies": {
+		"cross-env": "^10.1.0"
+	}
+}

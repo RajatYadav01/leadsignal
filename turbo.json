@@ -1,0 +1,46 @@
+{
+	"$schema": "https://turbo.build/schema.json",
+	"globalDependencies": ["eslint.config.js", "packages/eslint-config/**"],
+	"tasks": {
+		"format": {
+			"cache": false
+		},
+		"format:check": {
+			"cache": false
+		},
+		"lint": {
+			"cache": true
+		},
+		"lint:fix": {
+			"cache": false
+		},
+		"lint:report": {
+			"cache": true,
+			"outputs": ["lint-report.json"]
+		},
+		"test:unit": {
+			"outputs": [],
+			"cache": true
+		},
+		"test:integration": {
+			"outputs": [],
+			"cache": true
+		},
+		"test": {
+			"dependsOn": ["test:unit", "test:integration"],
+			"outputs": []
+		},
+		"test:e2e": {
+			"dependsOn": ["^build"],
+			"outputs": ["test/**/*.spec.ts", "playwright.config.ts"],
+			"cache": true
+		},
+		"build": {
+			"dependsOn": ["^build"]
+		},
+		"dev": {
+			"cache": false,
+			"persistent": true
+		}
+	}
+}

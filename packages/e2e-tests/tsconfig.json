@@ -1,0 +1,8 @@
+{
+	"extends": "@leadsignal/tsconfig/base.json",
+	"compilerOptions": {
+		"types": ["node", "@playwright/test"]
+	},
+	"include": ["test/**/*", "utils/**/*"],
+	"exclude": ["node_modules"]
+}
