@@ -122,7 +122,7 @@ DATABASE_URL = env.str("DATABASE_URL", default="sqlite:///:memory:")
 DATABASES = {"default": env.db_url_config(DATABASE_URL)}
 
 TEST_SUFFIX = os.environ.get("TEST_MODE")
-DATABASES["default"]["TEST"] = {"NAME": f"test_pathistics_{TEST_SUFFIX}"}
+DATABASES["default"]["TEST"] = {"NAME": f"test_leadsignal_{TEST_SUFFIX}"}
 
 
 # Password validation
