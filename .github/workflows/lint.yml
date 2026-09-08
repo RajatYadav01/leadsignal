@@ -14,25 +14,25 @@ jobs:
 
       # Set up Python environment
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
-          python-version: "3.13" # Match your project's Python version
+          python-version: "3.14" # Match your project's Python version
 
       # Set up uv and cache its managed dependencies
       - name: Set up uv (Python Package Manager)
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
         with:
           enable-cache: true
-          cache-dependency-glob: "apps/api/pyproject.toml"
+          cache-dependency-glob: "apps/api/v1/pyproject.toml"
 
       # Create the virtual environment and install dependencies using uv
       - name: Install Backend dependencies
         run: |
           # Create the virtual environment
-          uv venv apps/api/.venv
+          uv venv apps/api/v1/.venv
 
           # Change directory to the backend app
-          cd apps/api
+          cd apps/api/v1
 
           # Install the project and its dependencies into the local .venv
           uv sync --group dev
