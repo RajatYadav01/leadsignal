@@ -1,7 +1,7 @@
 import * as path from "node:path";
 import { test, expect } from "@playwright/test";
 import { createProject, uploadCSV, configureICP, analyzeLeads } from "./utils/helpers";
-import { projectData, icpData } from "./utils/test-Data";
+import { projectData, icpData } from "./utils/test-data";
 
 test.describe("LeadSignal E2E", () => {
 	test.beforeEach(async ({ page }) => {
@@ -13,6 +13,38 @@ test.describe("LeadSignal E2E", () => {
 		await createProject(page, projectData.name, projectData.description);
 		await expect(page).toHaveURL(/\/projects\/\d+\/dashboard/);
 		await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+	});
+
+	test("should edit a project's name and description", async ({ page }) => {
+		await createProject(page, projectData.name, projectData.description);
+		await page.getByRole("link", { name: "Projects" }).click();
+
+		await page.getByRole("button", { name: `Edit ${projectData.name}` }).click();
+		const editDialog = page.getByRole("dialog", { name: "Edit Project" });
+		await expect(editDialog.getByLabel("Project name")).toHaveValue(projectData.name);
+		await expect(editDialog.getByLabel("Description")).toHaveValue(projectData.description);
+
+		const updatedName = `${projectData.name} Updated`;
+		const updatedDescription = "Updated project description for the E2E test.";
+		await editDialog.getByLabel("Project name").fill(updatedName);
+		await editDialog.getByLabel("Description").fill(updatedDescription);
+		await editDialog.getByRole("button", { name: "Save changes" }).click();
+
+		await expect(page.getByRole("heading", { name: updatedName })).toBeVisible();
+		await expect(page.getByText(updatedDescription)).toBeVisible();
+	});
+
+	test("should delete a project and its associated data", async ({ page }) => {
+		await createProject(page, projectData.name, projectData.description);
+		await page.getByRole("link", { name: "Projects" }).click();
+
+		await page.getByRole("button", { name: `Delete ${projectData.name}` }).click();
+		const confirmationDialog = page.getByRole("dialog");
+		await expect(confirmationDialog).toContainText("All associated leads, contacts, signals");
+		await confirmationDialog.getByRole("button", { name: "Delete project" }).click();
+
+		await expect(page.getByRole("heading", { name: "Your Projects" })).toBeVisible();
+		await expect(page.getByText(projectData.name)).toHaveCount(0);
 	});
 
 	test("should upload a CSV file", async ({ page }) => {
